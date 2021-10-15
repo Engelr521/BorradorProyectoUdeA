@@ -45,6 +45,33 @@ const Vehiculos = () => {
     // Estado para poder cambios dentro del la lista de vehiculosBackEnd
     const [carros, setCarros] = useState ([]);
 
+    // contexto para actualizar tabla traida del backend
+    const [ejecutarConsulta, setEjecutarConsulta] = useState (true);
+
+    useEffect(() => { 
+        const obtenerVehiculos = async () => {
+
+            // obtener lista de vehiculos desde backend con el metodo GET de la API
+            const options = {method: 'GET', url: 'http://localhost:5000/vehiculos'};
+
+            // axios me devuelve las informaciones del backend solicitadas en el metodo GET 
+            await axios
+                .request(options)
+                .then(function (response) {
+                    setCarros(response.data);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+
+            // setCarros([])
+        }
+        if (ejecutarConsulta) {
+            obtenerVehiculos();
+            setEjecutarConsulta(false);
+        }
+
+    }, [ejecutarConsulta]);
 
     // useEffect Vacio que es el que se encarga de traer los datos de la BD
     useEffect( () => {
@@ -58,12 +85,14 @@ const Vehiculos = () => {
             .request(options)
             .then(function (response) {
                 setCarros(response.data);
+                setEjecutarConsulta(true);
             })
             .catch(function (error) {
                 console.error(error);
             });
 
-        // setCarros([]);
+            // setCarros([])
+        // }
     },[]);
 
 
@@ -75,6 +104,7 @@ const Vehiculos = () => {
     
     //funcion para cargar  los datso de las variables de los input en un json del formulario de creacion de vehiculos y enviarlos al backend
     const submitForm = async (e) => {
+        
         e.preventDefault();
         const fd = new FormData(form.current);
         // saca los datos del los input en un forEach, para esto toa poner la variable name en cada uno de los inputs
@@ -93,7 +123,8 @@ const Vehiculos = () => {
 
         await axios.request(options).then(function (response) {
             console.log(response.data);
-            toast.success('Vehiculo creado con exito!!'); 
+            toast.success('Vehiculo creado con exito!!');
+            
           }).catch(function (error) {
             console.error(error);
             toast.error('Error creando el vehiculo!!'); 
@@ -108,7 +139,7 @@ const Vehiculos = () => {
         // // identificar el caso de error y mostrar el toast de error
     };
 
-    const FilaVehiculo = ({carros}) => {
+    const FilaVehiculo = ({carros, setEjecutarConsulta}) => {
         console.log("Carros", carros);
         const [edit, setEdit] = useState (false);
 
@@ -125,8 +156,8 @@ const Vehiculos = () => {
             console.log(infoNuevoVehiculo);
             // envio metodo PUT o PACH para actualizacion de informacion al BackEnd
             const options = {
-                method: 'PACH',
-                url: '#',
+                method: 'PATCH',
+                url: 'http://localhost:5000/vehiculos/editar',
                 headers: {'Content-Type': 'application/json'},
                 data: {...infoNuevoVehiculo, id: carros._id},
             };
@@ -135,6 +166,7 @@ const Vehiculos = () => {
                 console.log(response.data);
                 toast.success('Vehiculo modificado con exito!!');
                 setEdit(false);
+                setEjecutarConsulta(true);
               }).catch(function (error) {
                 console.error(error);
                 toast.error('Error modificando el vehiculo!!'); 
@@ -144,7 +176,7 @@ const Vehiculos = () => {
         const eliminarVehiculo = async () => {
             const options = {
                 method: 'DELETE',
-                url: '#',
+                url: 'http://localhost:5000/vehiculos/eliminar',
                 headers: {'Content-Type': 'application/json'},
                 data: { id: carros._id },
             };
@@ -152,6 +184,7 @@ const Vehiculos = () => {
             await axios.request(options).then(function (response) {
                 console.log(response.data);
                 toast.success('Vehiculo eliminado con exito!!');
+                setEjecutarConsulta(true);
                 setEdit(false);
               }).catch(function (error) {
                 console.error(error);
@@ -321,7 +354,7 @@ const Vehiculos = () => {
                     {carros.map((carros) => {
                         return (
                             
-                                <FilaVehiculo key = {nanoid()} carros = {carros}/>
+                                <FilaVehiculo key = {nanoid()} carros = {carros} setEjecutarConsulta = {setEjecutarConsulta} />
                             
                         )
                     })}

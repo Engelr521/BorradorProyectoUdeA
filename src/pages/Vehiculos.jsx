@@ -47,7 +47,7 @@ const Vehiculos = () => {
 
 
     // useEffect Vacio que es el que se encarga de traer los datos de la BD
-    useEffect(() => {
+    useEffect( () => {
         // const obtenerVehiculos = async () => {
 
         // obtener lista de vehiculos desde backend con el metodo GET de la API
@@ -108,6 +108,156 @@ const Vehiculos = () => {
         // // identificar el caso de error y mostrar el toast de error
     };
 
+    const FilaVehiculo = ({carros}) => {
+        console.log("Carros", carros);
+        const [edit, setEdit] = useState (false);
+
+        // creacon de estados para la edicion de elementos en la tabla
+        const [infoNuevoVehiculo, setInfoNuevoVehiculo] = useState ({
+        
+        nombre: carros.nombre,
+        marca: carros.marca,
+        modelo: carros.modelo,
+        });
+
+        //funcion para envio de edicion de informacion
+        const actualizarVehiculo = async () => {
+            console.log(infoNuevoVehiculo);
+            // envio metodo PUT o PACH para actualizacion de informacion al BackEnd
+            const options = {
+                method: 'PACH',
+                url: '#',
+                headers: {'Content-Type': 'application/json'},
+                data: {...infoNuevoVehiculo, id: carros._id},
+            };
+
+            await axios.request(options).then(function (response) {
+                console.log(response.data);
+                toast.success('Vehiculo modificado con exito!!');
+              }).catch(function (error) {
+                console.error(error);
+              });
+        }
+
+
+        return (
+            <tr>
+                
+                {edit ? 
+                    <>
+                    
+                        {/* <th scope="row" className="input-group  justify-content-center">{carros._id.slice(20)}</th> */}
+                        <td>
+                            <div className="input-group justify-content-center">
+                                <input 
+                                    type="text" 
+                                    className="form-control-tabla" 
+                                    value = {infoNuevoVehiculo.nombre} 
+                                    onChange = { (e) => setInfoNuevoVehiculo ({...infoNuevoVehiculo, nombre:e.target.value}) }
+                                    aria-label="Descripción" aria-describedby="basic-addon1"> 
+                                </input>
+                            </div>
+                        </td>
+                        <td>
+                            <div className="input-group justify-content-center mb-6">
+                                <input 
+                                    type="text" 
+                                    className="form-control-tabla" 
+                                    value = {infoNuevoVehiculo.marca} 
+                                    onChange = { (e) => setInfoNuevoVehiculo ({...infoNuevoVehiculo, marca:e.target.value}) }
+                                    aria-label="Precio" 
+                                    aria-describedby="basic-addon1"> 
+                                </input>
+                            </div>
+                        </td>
+                        <td>
+                            <div className="input-group justify-content-center mb-6">
+                                <input 
+                                    type="text" 
+                                    className="form-control-tabla" 
+                                    value = {infoNuevoVehiculo.modelo} 
+                                    onChange = { (e) => setInfoNuevoVehiculo ({...infoNuevoVehiculo, modelo:e.target.value}) }
+                                    aria-label="Precio" 
+                                    aria-describedby="basic-addon1"> 
+                                </input>
+                                    {/* <select className="form-select" id="inputGroupSelect01">
+                                        <option selected>...</option>
+                                        <option value="1">Activo</option>
+                                        <option value="2">Inactivo</option>
+                                    </select> */}
+                            </div>
+                        </td>
+                    
+                    </>  
+                :
+                <>
+                {/* <th scope="row" className="input-group  justify-content-center">{carros._id.slice(20)}</th> */}
+                <td>
+                    <div className="input-group justify-content-center">
+                        {carros.nombre}
+                        {/* <input 
+                            type="text" 
+                            className="form-control-tabla" 
+                            value = {infoNuevoVehiculo.nombre} 
+                            onChange = { (e) => setInfoNuevoVehiculo ({...infoNuevoVehiculo, nombre:e.target.value}) }
+                            aria-label="Descripción" aria-describedby="basic-addon1"> 
+                        </input> */}
+                    </div>
+                </td>
+                <td>
+                    <div className="input-group justify-content-center mb-6">
+                    {carros.marca}
+                        {/* <input 
+                            type="text" 
+                            className="form-control-tabla" 
+                            value = {carros.marca} 
+                            onChange = { (e) => setInfoNuevoVehiculo ({...infoNuevoVehiculo, marca:e.target.value}) }
+                            aria-label="Precio" 
+                            aria-describedby="basic-addon1"> 
+                        </input> */}
+                    </div>
+                </td>
+                <td>
+                    <div className="input-group justify-content-center mb-6">
+                        {carros.modelo}
+                        {/* <input 
+                            type="text" 
+                            className="form-control-tabla" 
+                            value = {carros.modelo} 
+                            onChange = { (e) => setInfoNuevoVehiculo ({...infoNuevoVehiculo, modelo:e.target.value}) }
+                            aria-label="Precio" 
+                            aria-describedby="basic-addon1"> 
+                        </input> */}
+                            {/* <select className="form-select" id="inputGroupSelect01">
+                                <option selected>...</option>
+                                <option value="1">Activo</option>
+                                <option value="2">Inactivo</option>
+                            </select> */}
+                    </div>
+                </td>
+                </>
+                }
+                <td>
+                    <div className="input-group justify-content-around mb-6">
+                        { edit ? (<i 
+                                    className = "fas fa-check"
+                                    onClick = {() => actualizarVehiculo()}  > </i>
+                        ) : (
+                        <i 
+                            onClick = {() => setEdit(!edit)} 
+                            className = "fas fa-pencil-alt" 
+                            // onClick = { () => actualizarVehiculo() } 
+                            > 
+                        </i>
+                        )}
+                        <i className = "fas fa-trash" ></i>
+                    </div>
+                </td>
+            </tr>
+        )
+    };
+
+
     return (
         <div>
             <form ref = {form} onSubmit = {submitForm} >
@@ -135,7 +285,7 @@ const Vehiculos = () => {
             <table className="table table-striped table-hover align-middle table-bordered">
                 <thead className="table-dark">
                     <tr>
-                        <th scope="col" className="text-center">id</th>
+                        {/* <th scope="col" className="text-center">id</th> */}
                         <th scope="col" className="text-center">Descripción</th>
                         <th scope="col" className="text-center">Valor Unitario</th>
                         <th scope="col" className="text-center">Estado</th>
@@ -146,88 +296,12 @@ const Vehiculos = () => {
                     {/* // me permite visualizar la base de datos del backend, en esta caso el diccionaro que temenos arriba */}
                     {carros.map((carros) => {
                         return (
-                            <tr key = {nanoid()}>
-                                <th scope="row" className="input-group  justify-content-center">{carros._id.slice(20)}</th>
-                                <td>
-                                    <div className="input-group justify-content-center">
-                                        <input type="text" className="form-control-tabla" placeholder= {carros.nombre}
-                                            aria-label="Descripción" aria-describedby="basic-addon1"></input>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className="input-group justify-content-center mb-6">
-                                        <input type="number" className="form-control-tabla" placeholder={carros.marca} aria-label="Precio" aria-describedby="basic-addon1"></input>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className="input-group justify-content-center mb-6">
-                                        <input type="number" className="form-control-tabla" placeholder={carros.modelo} aria-label="Precio" aria-describedby="basic-addon1"></input>
-                                        {/* <select className="form-select" id="inputGroupSelect01">
-                                            <option selected>...</option>
-                                            <option value="1">Activo</option>
-                                            <option value="2">Inactivo</option>
-                                        </select> */}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className="input-group justify-content-around mb-6">
-                                        <i className = "fas fa-pencil-alt" ></i>
-                                        <i className = "fas fa-trash" ></i>
-                                    </div>
-                                </td>
-                            </tr>
-
+                            
+                                <FilaVehiculo key = {nanoid()} carros = {carros}/>
+                            
                         )
                     })}
-                    
-                    {/* <tr>
-                        <th scope="row">2</th>
-                        <td>
-                            <div className="input-group justify-content-center mb-6">
-                                <input type="text" className="form-control-tabla" placeholder="Salsa de Tomate" 
-                                    aria-label="Descripción" aria-describedby="basic-addon1"></input>
-                            </div>
-                        </td>
-                        <td>
-                            <div className="input-group justify-content-center mb-6">
-                                <input type="number" className="form-control-tabla" placeholder="2300"
-                                    aria-label="Precio" aria-describedby="basic-addon1"></input>
-                            </div>
-                        </td>
-                        <td>
-                            <div className="input-group justify-content-center mb-6">
-                                <select className="form-select" id="inputGroupSelect01">
-                                    <option  disabled >...</option>
-                                    <option value="1">Activo</option>
-                                    <option value="2">Inactivo</option>
-                                </select>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>
-                            <div className="input-group justify-content-center mb-6">
-                                <input type="text" className="form-control-tabla" placeholder="Queso"
-                                    aria-label="Descripción" aria-describedby="basic-addon1"></input>
-                            </div>
-                        </td>
-                        <td>
-                            <div className="input-group justify-content-center mb-6">
-                                <input type="number" className="form-control-tabla" placeholder="7000"
-                                    aria-label="Precio" aria-describedby="basic-addon1"></input>
-                            </div>
-                        </td>
-                        <td>
-                            <div className="input-group justify-content-center mb-6">
-                                <select className="form-select" id="inputGroupSelect01">
-                                    <option selected>...</option>
-                                    <option value="1">Activo</option>
-                                    <option value="2">Inactivo</option>
-                                </select>
-                            </div>
-                        </td>
-                    </tr> */}
+                                        
                 </tbody>
             </table>
         </div>

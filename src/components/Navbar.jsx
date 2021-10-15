@@ -17,7 +17,7 @@ const Navbar = () => {
 
         {/* // boton para ver quien esta logueado en el momento */}
         <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"></input>
+          {/* <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"></input> */}
           <button class="btn btn-outline-success" type="submit"  > {isAuthenticated ? user.name : "User"} </button>
         </form>
 

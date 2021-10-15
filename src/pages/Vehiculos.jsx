@@ -134,11 +134,30 @@ const Vehiculos = () => {
             await axios.request(options).then(function (response) {
                 console.log(response.data);
                 toast.success('Vehiculo modificado con exito!!');
+                setEdit(false);
               }).catch(function (error) {
                 console.error(error);
+                toast.error('Error modificando el vehiculo!!'); 
               });
         }
 
+        const eliminarVehiculo = async () => {
+            const options = {
+                method: 'DELETE',
+                url: '#',
+                headers: {'Content-Type': 'application/json'},
+                data: { id: carros._id },
+            };
+
+            await axios.request(options).then(function (response) {
+                console.log(response.data);
+                toast.success('Vehiculo eliminado con exito!!');
+                setEdit(false);
+              }).catch(function (error) {
+                console.error(error);
+                toast.error('Error eliminando vehiculo el vehiculo!!'); 
+              });
+        }
 
         return (
             <tr>
@@ -250,7 +269,12 @@ const Vehiculos = () => {
                             > 
                         </i>
                         )}
-                        <i className = "fas fa-trash" ></i>
+                        <i 
+                            className = "fas fa-trash"
+                            onClick = {() => eliminarVehiculo()} 
+                            >
+                            
+                        </i>
                     </div>
                 </td>
             </tr>

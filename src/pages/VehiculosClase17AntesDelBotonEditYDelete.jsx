@@ -147,7 +147,7 @@ const Vehiculos = () => {
                     {carros.map((carros) => {
                         return (
                             <tr key = {nanoid()}>
-                                <th scope="row" className="input-group  justify-content-center">{carros._id.slice(20)}</th>
+                                <th scope="row" className="align-middle">1</th>
                                 <td>
                                     <div className="input-group justify-content-center">
                                         <input type="text" className="form-control-tabla" placeholder= {carros.nombre}

@@ -2,39 +2,35 @@
 import React, {useEffect, useState, useRef} from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
-import { nanoid } from 'nanoid';
-
-
 
 // base de datos de vehiculos, simula el backend
-// const vehiculosBackEnd = [
-//     {
-//         nombre:"Corolla",
-//         marca:"Toyota",
-//         modelo: 2015,
-//     },
-//     {
-//         nombre:"Sandero",
-//         marca:"Renault",
-//         modelo: 2020,
-//     },
-//     {
-//         nombre:"Rav4",
-//         marca:"Toyota",
-//         modelo: 2021,
-//     },
-//     {
-//         nombre:"Fiesta",
-//         marca:"Ford",
-//         modelo: 2017,
-//     },
-//     {
-//         nombre:"Mazda 3",
-//         marca:"Mazda",
-//         modelo: 2020,
-//     },
-// ];
+const vehiculosBackEnd = [
+    {
+        nombre:"Corolla",
+        marca:"Toyota",
+        modelo: 2015,
+    },
+    {
+        nombre:"Sandero",
+        marca:"Renault",
+        modelo: 2020,
+    },
+    {
+        nombre:"Rav4",
+        marca:"Toyota",
+        modelo: 2021,
+    },
+    {
+        nombre:"Fiesta",
+        marca:"Ford",
+        modelo: 2017,
+    },
+    {
+        nombre:"Mazda 3",
+        marca:"Mazda",
+        modelo: 2020,
+    },
+];
 
 
 
@@ -47,34 +43,17 @@ const Vehiculos = () => {
 
 
     // useEffect Vacio que es el que se encarga de traer los datos de la BD
-    useEffect(() => {
-        // const obtenerVehiculos = async () => {
-
-        // obtener lista de vehiculos desde backend con el metodo GET de la API
-        const options = {method: 'GET', url: 'http://localhost:5000/vehiculos'};
-
-        // axios me devuelve las informaciones del backend solicitadas en el metodo GET 
-        axios
-            .request(options)
-            .then(function (response) {
-                setCarros(response.data);
-            })
-            .catch(function (error) {
-                console.error(error);
-            });
-
-        // setCarros([]);
-    },[]);
-
-
-    
+    useEffect(()=>{
+        // obtener lista de vehiculos desde backend
+        setCarros(vehiculosBackEnd)
+    },[])
 
     // funcion de referencia al formulario de creacion de vehiculos
     const form = useRef(null);
 
     
     //funcion para cargar  los datso de las variables de los input en un json del formulario de creacion de vehiculos y enviarlos al backend
-    const submitForm = async (e) => {
+    const submitForm = (e) => {
         e.preventDefault();
         const fd = new FormData(form.current);
         // saca los datos del los input en un forEach, para esto toa poner la variable name en cada uno de los inputs
@@ -82,31 +61,12 @@ const Vehiculos = () => {
         fd.forEach((value, key) => {
             nuevoVehiculo[key] = value;
         });
-
-        // en estas opciones se piede definir el metodo para enviar la informacion con POST al BackEnd
-        const options = {
-            method: 'POST',
-            url: 'http://localhost:5000/vehiculos/nuevo',
-            headers: {'Content-Type': 'application/json'},
-            data: {nombre: nuevoVehiculo.nombre, marca: nuevoVehiculo.marca, modelo: nuevoVehiculo.modelo},
-        };
-
-        await axios.request(options).then(function (response) {
-            console.log(response.data);
-            toast.success('Vehiculo creado con exito!!'); 
-          }).catch(function (error) {
-            console.error(error);
-            toast.error('Error creando el vehiculo!!'); 
-          });
-        //
-              
-
-
-        // setCarros([...carros, nuevoVehiculo]); 
-        // // identificar el caso de exito y mostrar el toast de exito
-        // toast.success('Vehiculo creado con exito!!'); 
-        // // identificar el caso de error y mostrar el toast de error
-    };
+        setCarros([...carros, nuevoVehiculo]); 
+        // identificar el caso de exito y mostrar el toast de exito
+        toast.success('Vehiculo creado con exito!!'); 
+        // identificar el caso de error y mostrar el toast de error
+        // toast.error('Error creando el vehiculo!!'); 
+    }
 
     return (
         <div>
@@ -145,7 +105,7 @@ const Vehiculos = () => {
                     {/* // me permite visualizar la base de datos del backend, en esta caso el diccionaro que temenos arriba */}
                     {carros.map((carros) => {
                         return (
-                            <tr key = {nanoid()}>
+                            <tr>
                                 <th scope="row" className="align-middle">1</th>
                                 <td>
                                     <div className="input-group justify-content-center">
